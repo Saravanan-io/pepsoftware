@@ -29,7 +29,7 @@ export function CTAButton({
   rel,
 }: CTAButtonProps) {
   const baseStyles =
-    "group inline-flex items-center justify-center font-medium rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#5B4CFB]/40 active:scale-[0.98]";
+    "group inline-flex items-center justify-center font-medium rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#C86A28]/40 active:scale-[0.98]";
 
   const sizeStyles = {
     sm: "text-xs px-4 py-2 gap-1.5",
@@ -39,15 +39,15 @@ export function CTAButton({
 
   const variantStyles = {
     primary:
-      "bg-gradient-to-r from-[#5B4CFB] via-[#754CFB] to-[#994CFB] text-white shadow-[0_10px_25px_-5px_rgba(91,76,251,0.4)] hover:shadow-[0_15px_35px_-5px_rgba(91,76,251,0.55)] hover:-translate-y-0.5 border border-white/20",
+      "bg-[#151515] text-[#F7F8F8] hover:bg-[#544643] shadow-md shadow-[#151515]/10 hover:-translate-y-0.5 border border-[#151515]",
     secondary:
-      "bg-[#EFEDFF] text-[#5B4CFB] hover:bg-[#5B4CFB] hover:text-white border border-[#5B4CFB]/20 shadow-xs hover:shadow-[0_8px_20px_-4px_rgba(91,76,251,0.25)]",
+      "bg-[#E9E8E6] text-[#151515] hover:bg-[#151515] hover:text-[#F7F8F8] border border-[#C6C2C1] shadow-xs",
     outline:
-      "bg-white/90 text-[#0E0E12] border border-[#ECECF1] hover:border-[#5B4CFB] hover:text-[#5B4CFB] shadow-xs hover:shadow-md",
+      "bg-[#EFF0EF] text-[#151515] border border-[#C6C2C1] hover:border-[#151515] shadow-xs hover:shadow-sm",
     ghost:
-      "text-[#5B5B66] hover:text-[#5B4CFB] hover:bg-[#EFEDFF]/60",
+      "text-[#544643] hover:text-[#151515] hover:bg-[#E9E8E6]",
     white:
-      "bg-white text-[#0E0E12] hover:bg-[#F8F9FC] shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.18)] hover:-translate-y-0.5",
+      "bg-[#F7F8F8] text-[#151515] hover:bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:-translate-y-0.5",
   }[variant];
 
   return (
@@ -59,11 +59,11 @@ export function CTAButton({
       className={cn(baseStyles, sizeStyles, variantStyles, className)}
     >
       {iconPosition === "left" && Icon && (
-        <Icon className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
+        <Icon className="w-4 h-4 text-[#C86A28] transition-transform duration-300 group-hover:-translate-x-1" />
       )}
       <span>{children}</span>
       {iconPosition === "right" && Icon && (
-        <Icon className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+        <Icon className="w-4 h-4 text-[#C86A28] transition-transform duration-300 group-hover:translate-x-1" />
       )}
     </Link>
   );

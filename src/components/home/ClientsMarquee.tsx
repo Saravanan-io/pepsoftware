@@ -1,32 +1,58 @@
 "use client";
 
-import { CLIENTS_DATA } from "@/data/clients";
+import Image from "next/image";
 
 export function ClientsMarquee() {
-  const items = [...CLIENTS_DATA, ...CLIENTS_DATA, ...CLIENTS_DATA, ...CLIENTS_DATA];
+  const customClients = [
+    {
+      name: "Client 1",
+      imageSrc: "/clients/client-1.png",
+    },
+    {
+      name: "Client 2",
+      imageSrc: "/clients/client-2.png",
+    },
+    {
+      name: "Client 3",
+      imageSrc: "/clients/client-3.png",
+    },
+    {
+      name: "Client 4",
+      imageSrc: "/clients/client-4.png",
+    },
+    {
+      name: "Client 5",
+      imageSrc: "/clients/client-5.png",
+    },
+    {
+      name: "Client 6",
+      imageSrc: "/clients/client-6.png",
+    }
+  ];
 
   return (
-    <section className="py-10 bg-[#f4f6fb] border-y border-[#e8eaf0] overflow-hidden relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <p className="text-center text-xs uppercase tracking-[0.2em] font-bold text-[#8b8fa8]">
-          TRUSTED BY INNOVATIVE BUSINESSES
-        </p>
+    <section className="py-12 bg-[#E7EBEA]/50 border-y border-[#C6C2C1]/40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <h3 className="text-center text-[15px] font-semibold text-[#544643] tracking-wide">
+          A few of the amazing clients we've worked with.
+        </h3>
       </div>
 
-      <div className="relative flex overflow-hidden select-none group">
-        {/* Fade masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#f4f6fb] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#f4f6fb] to-transparent z-10 pointer-events-none" />
-
-        <div className="flex items-center gap-8 animate-marquee group-hover:[animation-play-state:paused] shrink-0">
-          {items.map((client, idx) => (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-6 w-full">
+          {customClients.map((client, idx) => (
             <div
               key={`${client.name}-${idx}`}
-              className="flex items-center justify-center px-8 py-3 rounded-2xl bg-white border border-[#e8eaf0] shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 min-w-[120px] group/item"
+              className="flex items-center justify-center w-[180px] h-[72px] rounded-2xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-sm transition-all duration-300 shrink-0 p-2 overflow-hidden relative"
             >
-              <span className="text-lg font-black tracking-widest text-[#8b8fa8] group-hover/item:text-indigo-600 transition-colors duration-300">
-                {client.logo}
-              </span>
+              <div className="relative w-full h-full">
+                <Image 
+                  src={client.imageSrc} 
+                  alt={client.name} 
+                  fill 
+                  className="object-contain filter grayscale contrast-125 opacity-85 hover:grayscale-0 hover:opacity-100 transition-all duration-300" 
+                />
+              </div>
             </div>
           ))}
         </div>

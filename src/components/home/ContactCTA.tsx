@@ -6,78 +6,70 @@ import { COMPANY_INFO } from "@/lib/constants";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
 
 const proofItems = [
-  { icon: "🎨", label: "Creative Innovation", sub: "Award-winning design" },
+  { icon: "🎨", label: "Creative Innovation", sub: "Award-winning craft" },
   { icon: "⚡", label: "Long-Term Partnership", sub: "Always by your side" },
   { icon: "📊", label: "Real Business Impact", sub: "Measurable growth" },
 ];
 
 export function ContactCTA() {
   return (
-    <section className="py-20 lg:py-28 section-light relative overflow-hidden">
+    <section className="py-20 lg:py-28 bg-[#F7F8F8] relative overflow-hidden">
       <div className="absolute inset-0 bg-dot-light opacity-30 pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <RevealOnScroll>
-          {/* Big dark CTA card */}
-          <div className="relative rounded-[36px] overflow-hidden bg-gradient-to-br from-[#0a0d1b] via-[#0d1228] to-[#050910] p-8 sm:p-12 lg:p-16 shadow-[0_40px_100px_rgba(79,70,229,0.3)] border border-white/10">
-            {/* Decorative glows */}
-            <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-indigo-700/25 blur-[100px] pointer-events-none" />
-            <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-violet-700/20 blur-[100px] pointer-events-none" />
-            <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none" />
-
-            {/* Illustrative mountain/landscape silhouette decoration */}
-            <div className="hidden lg:block absolute bottom-0 right-16 w-80 h-48 pointer-events-none opacity-20">
-              <svg viewBox="0 0 320 192" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                <path d="M0 192 L80 80 L160 130 L240 40 L320 100 L320 192 Z" fill="url(#mtn-grad)" />
-                <defs>
-                  <linearGradient id="mtn-grad" x1="0" y1="0" x2="320" y2="192" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#4f46e5" />
-                    <stop offset="1" stopColor="#7c3aed" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+          {/* Big Charcoal Luxury CTA card */}
+          <div className="relative rounded-[36px] overflow-hidden bg-[#151515] border border-[#544643]/50 p-8 sm:p-12 lg:p-16 shadow-2xl">
+            {/* Soft subtle metallic glows */}
+            <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#544643]/30 blur-[120px] pointer-events-none" />
+            <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-[#C86A28]/20 blur-[120px] pointer-events-none" />
+            <div className="absolute inset-0 bg-grid-dark opacity-10 pointer-events-none" />
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               {/* Left: Heading + CTA buttons */}
               <div className="lg:col-span-8 space-y-6">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#544643]/40 border border-[#544643] text-[#C86A28] text-xs font-bold uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>LET'S WORK TOGETHER</span>
                 </span>
 
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.05] tracking-tight">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#F7F8F8] leading-[1.05] tracking-tight">
                   Ready to bring your{" "}
-                  <span className="text-gradient">ideas to life?</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C6C2C1] via-[#E9E8E6] to-[#C86A28]">
+                    ideas to life?
+                  </span>
                 </h2>
 
-                <p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-lg text-[#E7EBEA]/80 leading-relaxed max-w-2xl">
                   Partner with PEP Software and take your business to the next level with innovative digital solutions. Big ideas. Brighter tomorrow.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <Link href="/contact" className="btn-primary group inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-white font-bold text-base">
+                  <Link
+                    href="/contact"
+                    className="group inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#C86A28] text-white font-bold text-base hover:bg-[#544643] shadow-lg shadow-[#C86A28]/20 transition-all"
+                  >
                     <span>Get a Free Quote</span>
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>
 
                   <a
                     href={`tel:${COMPANY_INFO.phoneRaw}`}
-                    className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-full glass-dark border border-white/20 text-white font-semibold text-base hover:border-indigo-400/50 transition-all"
+                    className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-[#544643]/30 border border-[#544643] text-[#F7F8F8] font-semibold text-base hover:border-[#C86A28] transition-all"
                   >
-                    <Phone className="w-4 h-4 text-indigo-400" />
+                    <Phone className="w-4 h-4 text-[#C86A28]" />
                     <span>Talk to Our Team</span>
                   </a>
                 </div>
 
                 {/* Social proof mini badges */}
-                <div className="grid grid-cols-3 gap-3 pt-4 max-w-2xl">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 max-w-2xl">
                   {proofItems.map((item) => (
-                    <div key={item.label} className="flex items-start gap-2.5 p-3.5 rounded-2xl glass-dark border border-white/8">
+                    <div key={item.label} className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-[#544643]/20 border border-[#544643]/30">
                       <span className="text-lg">{item.icon}</span>
                       <div>
-                        <span className="text-xs font-bold text-white block">{item.label}</span>
-                        <span className="text-[10px] text-white/50 block">{item.sub}</span>
+                        <span className="text-xs font-bold text-[#F7F8F8] block">{item.label}</span>
+                        <span className="text-[10px] text-[#C6C2C1] block">{item.sub}</span>
                       </div>
                     </div>
                   ))}
@@ -85,46 +77,46 @@ export function ContactCTA() {
               </div>
 
               {/* Right: Contact info card */}
-              <div className="lg:col-span-4 glass-dark rounded-3xl p-7 border border-white/12 space-y-5">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-white/90">
+              <div className="lg:col-span-4 bg-[#151515]/90 rounded-3xl p-7 border border-[#544643]/50 space-y-5 shadow-xl">
+                <h4 className="text-sm font-bold uppercase tracking-wider text-[#F7F8F8]">
                   Direct Contact
                 </h4>
 
-                <div className="space-y-4 text-sm text-white/70">
+                <div className="space-y-4 text-sm text-[#E7EBEA]/80">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#544643]/40 border border-[#544643] text-[#C86A28] flex items-center justify-center shrink-0 mt-0.5">
                       <Map className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-white mb-0.5">Location</span>
-                      <span className="text-xs leading-relaxed">{COMPANY_INFO.city}, {COMPANY_INFO.state}</span>
+                      <span className="block text-xs font-bold text-[#F7F8F8] mb-0.5">Location</span>
+                      <span className="text-xs leading-relaxed text-[#C6C2C1]">{COMPANY_INFO.city}, {COMPANY_INFO.state}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-[#544643]/40 border border-[#544643] text-[#C86A28] flex items-center justify-center shrink-0">
                       <Phone className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-white mb-0.5">Call Us</span>
-                      <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="text-xs font-semibold text-indigo-300">
+                      <span className="block text-xs font-bold text-[#F7F8F8] mb-0.5">Call Us</span>
+                      <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="text-xs font-semibold text-[#C86A28] hover:underline">
                         {COMPANY_INFO.phone}
                       </a>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-[#544643]/40 border border-[#544643] text-[#C86A28] flex items-center justify-center shrink-0">
                       <MessageSquare className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="block text-xs font-bold text-white mb-0.5">Email Us</span>
-                      <span className="text-xs text-white/60">{COMPANY_INFO.email}</span>
+                      <span className="block text-xs font-bold text-[#F7F8F8] mb-0.5">Email Us</span>
+                      <span className="text-xs text-[#C6C2C1]">{COMPANY_INFO.email}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 text-[10px] text-white/30 border-t border-white/10">
+                <div className="pt-2 text-[10px] text-[#C6C2C1]/60 border-t border-[#544643]/40 font-medium">
                   Response guaranteed within 24 business hours.
                 </div>
               </div>

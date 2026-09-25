@@ -1,11 +1,11 @@
 export default function Loading() {
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center">
+    <div className="min-h-[60vh] flex flex-col items-center justify-center bg-[#F7F8F8]">
       <div className="relative w-12 h-12 flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-2 border-[#EFEDFF] border-t-[#5B4CFB] animate-spin" />
-        <div className="absolute w-4 h-4 rounded-full bg-gradient-to-tr from-[#5B4CFB] to-[#EC4899]" />
+        <div className="w-12 h-12 rounded-full border-2 border-[#C6C2C1] border-t-[#C86A28] animate-spin" />
+        <div className="absolute w-4 h-4 rounded-full bg-[#151515]" />
       </div>
-      <p className="mt-4 text-xs font-semibold text-[#9494A0] tracking-wider uppercase">
+      <p className="mt-4 text-xs font-bold text-[#544643] tracking-widest uppercase">
         Loading PEP Software...
       </p>
     </div>

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 export default function WorkPage() {
   return (
-    <div className="w-full">
-      <section className="pt-16 pb-12 bg-radial-subtle text-center">
+    <div className="w-full bg-[#F7F8F8]">
+      <section className="pt-24 pb-12 bg-[#F7F8F8] text-center border-b border-[#C6C2C1]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="Selected Works"

@@ -23,19 +23,19 @@ export function Preloader() {
           key="preloader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.03, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0d1b]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#F7F8F8]"
         >
           {/* Background grid */}
-          <div className="absolute inset-0 bg-grid-dark opacity-60 pointer-events-none" />
+          <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none" />
 
           <div className="relative flex flex-col items-center gap-5">
             {/* Logo SVG animation */}
-            <svg width="72" height="72" viewBox="0 0 100 100" fill="none" className="drop-shadow-2xl">
+            <svg width="72" height="72" viewBox="0 0 100 100" fill="none" className="drop-shadow-md">
               <defs>
                 <linearGradient id="pepG" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#4f46e5" />
-                  <stop offset="50%" stopColor="#7c3aed" />
-                  <stop offset="100%" stopColor="#ec4899" />
+                  <stop offset="0%" stopColor="#151515" />
+                  <stop offset="60%" stopColor="#544643" />
+                  <stop offset="100%" stopColor="#C86A28" />
                 </linearGradient>
               </defs>
               <motion.path
@@ -52,7 +52,7 @@ export function Preloader() {
                 cx="73"
                 cy="42"
                 r="7"
-                fill="#ec4899"
+                fill="#C86A28"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
@@ -65,17 +65,17 @@ export function Preloader() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="flex items-baseline gap-2"
             >
-              <span className="text-2xl font-black tracking-tight text-white">PEP</span>
-              <span className="text-2xl font-light tracking-tight text-indigo-400">Software</span>
+              <span className="text-2xl font-black tracking-tight text-[#151515]">PEP</span>
+              <span className="text-2xl font-light tracking-tight text-[#C86A28]">Software</span>
             </motion.div>
 
             {/* Progress track */}
-            <div className="w-36 h-[3px] bg-white/10 rounded-full overflow-hidden">
+            <div className="w-36 h-[3px] bg-[#C6C2C1]/40 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.0, ease: "easeInOut" }}
-                className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500"
+                className="h-full rounded-full bg-gradient-to-r from-[#151515] via-[#544643] to-[#C86A28]"
               />
             </div>
           </div>

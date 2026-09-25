@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#F7F8F8",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -61,7 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${jakarta.variable} font-sans scroll-smooth`}>
-      <body className="min-h-screen flex flex-col bg-white text-[#0E0E12] antialiased selection:bg-[#5B4CFB] selection:text-white">
+      <body className="min-h-screen flex flex-col bg-[#F7F8F8] text-[#151515] antialiased selection:bg-[#C86A28] selection:text-white">
         <Preloader />
         <ScrollProgressBar />
         <SmoothScrollProvider>

@@ -1,254 +1,151 @@
 "use client";
 
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Play, Star, Monitor, Smartphone, Layout, Cloud, ChevronRight } from "lucide-react";
+import { ArrowRight, Rocket, Users, BarChart3 } from "lucide-react";
+import { HeroVideo } from "./HeroVideo";
 
 export function HeroContent() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Smooth mouse parallax
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothX = useSpring(mouseX, { damping: 25, stiffness: 120 });
-  const smoothY = useSpring(mouseY, { damping: 25, stiffness: 120 });
-
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [6, -6]);
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-6, 6]);
-  const cardTranslateX1 = useTransform(smoothX, [-0.5, 0.5], [-12, 12]);
-  const cardTranslateY1 = useTransform(smoothY, [-0.5, 0.5], [-10, 10]);
-  const cardTranslateX2 = useTransform(smoothX, [-0.5, 0.5], [14, -14]);
-  const cardTranslateY2 = useTransform(smoothY, [-0.5, 0.5], [12, -12]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
   return (
-    <section
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative min-h-[92vh] flex items-center pt-24 pb-14 overflow-hidden bg-gradient-to-b from-[#f9fafc] via-[#ffffff] to-[#f4f6fc]"
-    >
-      {/* Subtle ambient lighting */}
-      <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[130px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-purple-500/8 blur-[100px] pointer-events-none" />
+    <section className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden bg-[#F7F8F8]">
+      {/* Background Abstract Shapes - Neutral Luxury Palette */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Top right depth glow */}
+        <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-[#E7EBEA] blur-[120px] rounded-full" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          {/* ─── Left Column: Headline, Subtitle, CTA, Stats ─── */}
-          <div className="lg:col-span-5 xl:col-span-5 space-y-7">
-            {/* Small Kicker */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-[11px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[#64748b]"
-            >
-              CREATIVE • DIGITAL • SOLUTIONS COMPANY
-            </motion.div>
+        {/* Bottom left soft surface glow */}
+        <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-[#EFF0EF] blur-[140px] rounded-full" />
 
-            {/* Massive Bold Headline */}
+        {/* Top right warm swoosh */}
+        <div className="absolute -top-32 right-0 w-[40%] h-[600px] bg-gradient-to-br from-[#E7EBEA] via-[#EFF0EF] to-[#E9E8E6] opacity-80 blur-[4px] rounded-bl-full transform rotate-12 scale-150 origin-top-right mix-blend-multiply" />
+
+        {/* Bottom right soft circles */}
+        <div className="absolute bottom-0 right-0 w-full h-[60%] overflow-hidden">
+          <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] border-[1px] border-[#C6C2C1]/40 rounded-full" />
+          <div className="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-gradient-to-tr from-[#E9E8E6]/80 to-transparent rounded-full" />
+        </div>
+
+        {/* Bottom left curve */}
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-gradient-to-tr from-[#C6C2C1]/20 to-transparent rounded-full blur-[2px]" />
+        <div className="absolute bottom-[-5%] left-[-5%] w-[300px] h-[300px] bg-gradient-to-tr from-[#E7EBEA]/60 to-transparent rounded-full blur-[2px]" />
+
+        {/* Dots grid top right */}
+        <div className="absolute top-[20%] right-[20%] w-32 h-32 opacity-30">
+          <div className="w-full h-full" style={{ backgroundImage: 'radial-gradient(#C6C2C1 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
+        </div>
+
+        {/* Dots grid bottom center */}
+        <div className="absolute bottom-[10%] left-[60%] w-32 h-20 opacity-30">
+          <div className="w-full h-full" style={{ backgroundImage: 'radial-gradient(#C6C2C1 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
+        </div>
+
+        {/* Connecting lines & dots */}
+        <svg className="absolute top-0 right-0 w-full h-full" viewBox="0 0 1000 1000" fill="none" preserveAspectRatio="xMidYMid slice">
+          <path d="M750 250 Q 800 350 900 400" stroke="#C6C2C1" strokeWidth="1.5" />
+          <circle cx="750" cy="250" r="5" fill="#C86A28" />
+          <circle cx="900" cy="400" r="5" fill="#544643" />
+          <path d="M150 900 Q 200 950 300 950" stroke="#C6C2C1" strokeWidth="1.5" />
+          <circle cx="150" cy="900" r="5" fill="#C86A28" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* Left Column: Headlines & CTA */}
+          <div className="lg:col-span-5 xl:col-span-5 space-y-8 relative z-20">
+            {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 22 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.08 }}
-              className="text-5xl sm:text-6xl xl:text-[72px] font-black tracking-tight leading-[1.02] text-[#0b0d17]"
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-[46px] sm:text-[56px] lg:text-[62px] leading-[1.06] font-extrabold tracking-tight text-[#151515]"
             >
-              Digital
+              Digital <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#544643] to-[#151515]">Excellence</span>
               <br />
-              Experiences,
-              <br />
-              Engineered
-              <br />
-              <span className="bg-gradient-to-r from-[#2563eb] via-[#4f46e5] to-[#7c3aed] text-transparent bg-clip-text">
-                for Growth.
+              Starts <span className="text-[#C86A28] relative inline-block">
+                Here.
+                <svg className="absolute w-full h-4 -bottom-1 left-0 text-[#C86A28]" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 50 10 100 2" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+                </svg>
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subheadline */}
             <motion.p
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.16 }}
-              className="text-sm sm:text-base text-[#4a4d6a] leading-relaxed max-w-lg font-normal"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-[17px] sm:text-[19px] text-[#544643] font-medium leading-relaxed max-w-[560px]"
             >
-              We design and develop modern websites, mobile applications, UI/UX and immersive digital solutions that help businesses grow in the real world and beyond.
+              We build powerful web, mobile and software solutions that help businesses grow, automate and stay ahead in the digital world.
             </motion.p>
 
-            {/* CTAs */}
+            {/* Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.24 }}
-              className="flex flex-wrap items-center gap-4 pt-1"
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-wrap items-center gap-4 pt-2"
             >
               <Link
-                href="/contact"
-                className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#2563eb] text-white font-bold text-sm shadow-[0_8px_25px_rgba(37,99,235,0.4)] hover:bg-[#1d4ed8] hover:shadow-[0_12px_32px_rgba(37,99,235,0.55)] transition-all duration-300 hover:-translate-y-0.5"
+                href="/work"
+                className="group inline-flex items-center gap-4 px-2 py-2 pr-6 rounded-full bg-[#151515] text-[#F7F8F8] hover:bg-[#544643] transition-colors shadow-lg shadow-[#151515]/10"
               >
-                <span>Start a Project</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <span className="pl-6 text-[16px] font-semibold">Our Portfolio</span>
+                <div className="w-10 h-10 rounded-full bg-[#E9E8E6] flex items-center justify-center text-[#151515] group-hover:translate-x-1 transition-transform">
+                  <ArrowRight className="w-5 h-5" />
+                </div>
               </Link>
 
               <Link
-                href="/work"
-                className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-white border border-[#e2e8f0] text-[#0b0d17] font-semibold text-sm shadow-sm hover:border-[#2563eb]/40 hover:shadow-md transition-all duration-300"
+                href="/services"
+                className="group inline-flex items-center gap-4 px-8 py-3 rounded-full bg-[#FFFFFF] border-[1.5px] border-[#C6C2C1] text-[#151515] hover:border-[#544643] transition-colors shadow-sm"
               >
-                <div className="w-7 h-7 rounded-full bg-[#eff6ff] flex items-center justify-center text-[#2563eb] group-hover:bg-[#2563eb] group-hover:text-white transition-colors">
-                  <Play className="w-3 h-3 fill-current ml-0.5" />
-                </div>
-                <span>Watch Our Work</span>
+                <span className="text-[16px] font-semibold">Explore Services</span>
+                <ArrowRight className="w-5 h-5 text-[#C86A28] group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
 
-            {/* Bottom Stats Row */}
+            {/* Features */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.35 }}
-              className="pt-6 grid grid-cols-4 gap-3 sm:gap-4 max-w-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-wrap items-center gap-6 sm:gap-8 pt-6"
             >
-              {[
-                { value: "4+", label: "Years Experience" },
-                { value: "150+", label: "Projects Delivered" },
-                { value: "50+", label: "Happy Clients" },
-                { value: "4.9", label: "Client Rating", hasStar: true },
-              ].map((s) => (
-                <div key={s.label} className="border-r border-[#e2e8f0] last:border-r-0 pr-2">
-                  <div className="flex items-center gap-1">
-                    <span className="text-xl sm:text-2xl font-black text-[#0b0d17] leading-none">
-                      {s.value}
-                    </span>
-                    {s.hasStar && <Star className="w-4 h-4 fill-amber-400 text-amber-400 inline shrink-0" />}
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-medium text-[#64748b] block mt-1.5 leading-tight">
-                    {s.label}
-                  </span>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center text-[#C86A28] shadow-xs">
+                  <Rocket className="w-5 h-5" />
                 </div>
-              ))}
+                <span className="text-[13px] font-bold text-[#151515] leading-tight">
+                  Innovative<br />Solutions
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center text-[#C86A28] shadow-xs">
+                  <Users className="w-5 h-5" />
+                </div>
+                <span className="text-[13px] font-bold text-[#151515] leading-tight">
+                  Client Focused<br />Approach
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center text-[#C86A28] shadow-xs">
+                  <BarChart3 className="w-5 h-5" />
+                </div>
+                <span className="text-[13px] font-bold text-[#151515] leading-tight">
+                  Results<br />Driven
+                </span>
+              </div>
             </motion.div>
           </div>
 
-          {/* ─── Right Column: Interactive 3D Tech Hub Visual ─── */}
-          <motion.div
-            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className="lg:col-span-7 xl:col-span-7 relative flex items-center justify-center min-h-[480px] sm:min-h-[560px] lg:min-h-[620px]"
-          >
-            {/* The 3D Composition Graphic */}
-            <div className="relative w-full h-full max-w-[680px] aspect-[16/10] sm:aspect-[16/9] flex items-center justify-center">
-              {/* Main 3D Artwork render with depth */}
-              <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(79,70,229,0.12)]">
-                <Image
-                  src="/hero-3d-scene.jpg"
-                  alt="PEP Software 3D Digital Solutions Hub"
-                  fill
-                  priority
-                  className="object-cover object-center scale-[1.03] transition-transform duration-700 ease-out"
-                />
-              </div>
-
-              {/* Interactive Layer: Floating Service Card Top-Left (Web Development) */}
-              <motion.div
-                style={{ x: cardTranslateX1, y: cardTranslateY1 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="absolute -top-3 left-4 sm:left-6 z-20 hidden sm:flex items-center gap-3 p-3.5 pr-4 rounded-2xl bg-white/92 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(37,99,235,0.18)] cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
-                  <Monitor className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#0b0d17] group-hover:text-[#2563eb] transition-colors">
-                    Web Development
-                  </h4>
-                  <p className="text-[10px] text-[#64748b]">Scalable websites for modern businesses.</p>
-                </div>
-                <div className="w-6 h-6 rounded-full bg-[#eff6ff] flex items-center justify-center text-[#2563eb] group-hover:bg-[#2563eb] group-hover:text-white transition-colors ml-1">
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </motion.div>
-
-              {/* Interactive Layer: Floating Service Card Top-Right (Mobile Apps) */}
-              <motion.div
-                style={{ x: cardTranslateX2, y: cardTranslateY2 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-6 right-2 sm:right-4 z-20 hidden sm:flex items-center gap-3 p-3.5 pr-4 rounded-2xl bg-white/92 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(236,72,153,0.18)] cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-md">
-                  <Smartphone className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#0b0d17] group-hover:text-pink-600 transition-colors">
-                    Mobile Apps
-                  </h4>
-                  <p className="text-[10px] text-[#64748b]">High-performance Android & iOS apps.</p>
-                </div>
-                <div className="w-6 h-6 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 group-hover:bg-pink-600 group-hover:text-white transition-colors ml-1">
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </motion.div>
-
-              {/* Interactive Layer: Floating Service Card Bottom-Left (UI/UX Design) */}
-              <motion.div
-                style={{ x: cardTranslateX2, y: cardTranslateY1 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="absolute bottom-6 left-2 sm:left-8 z-20 hidden sm:flex items-center gap-3 p-3.5 pr-4 rounded-2xl bg-white/92 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(124,58,237,0.18)] cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white shadow-md">
-                  <Layout className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#0b0d17] group-hover:text-violet-600 transition-colors">
-                    UI/UX Design
-                  </h4>
-                  <p className="text-[10px] text-[#64748b]">User-centric designs that create impact.</p>
-                </div>
-                <div className="w-6 h-6 rounded-full bg-purple-50 flex items-center justify-center text-violet-600 group-hover:bg-violet-600 group-hover:text-white transition-colors ml-1">
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </motion.div>
-
-              {/* Interactive Layer: Floating Service Card Bottom-Right (Cloud & API) */}
-              <motion.div
-                style={{ x: cardTranslateX1, y: cardTranslateY2 }}
-                whileHover={{ scale: 1.05, y: -4 }}
-                transition={{ duration: 0.2 }}
-                className="absolute -bottom-2 right-4 sm:right-8 z-20 hidden sm:flex items-center gap-3 p-3.5 pr-4 rounded-2xl bg-white/92 backdrop-blur-xl border border-white/80 shadow-[0_12px_32px_rgba(6,182,212,0.18)] cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-md">
-                  <Cloud className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-[#0b0d17] group-hover:text-blue-600 transition-colors">
-                    Cloud & API
-                  </h4>
-                  <p className="text-[10px] text-[#64748b]">Secure, scalable and reliable solutions.</p>
-                </div>
-                <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors ml-1">
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </motion.div>
-
-              {/* Floating pulse glow ring behind the central 3D cube */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-blue-500/15 blur-2xl pointer-events-none animate-pulse" />
-            </div>
-          </motion.div>
+          {/* Right Column: Video Showcase */}
+          <div className="lg:col-span-7 xl:col-span-7 relative z-20 flex justify-center lg:justify-end items-center w-full">
+            <HeroVideo />
+          </div>
         </div>
       </div>
     </section>

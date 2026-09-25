@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 
 export default function AcademyPage() {
   return (
-    <div className="w-full">
+    <div className="w-full bg-[#F7F8F8]">
       {/* Hero Header */}
-      <section className="pt-16 pb-20 bg-radial-subtle text-center">
+      <section className="pt-24 pb-20 bg-[#F7F8F8] text-center border-b border-[#C6C2C1]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="PEP Design & Tech Academy"
@@ -33,68 +33,68 @@ export default function AcademyPage() {
       <WhatsAppCommunityCTA />
 
       {/* Courses Detailed Cards List */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#F7F8F8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {COURSES_DATA.map((course, idx) => (
             <RevealOnScroll key={course.id} delay={idx * 0.08}>
-              <div className="p-8 sm:p-10 rounded-3xl bg-[#F8F9FC] border border-[#ECECF1] shadow-xs hover:border-[#5B4CFB]/40 hover:shadow-lg transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="p-8 sm:p-10 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-lg transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 {/* Left Column: Details */}
                 <div className="lg:col-span-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFEDFF] text-[#5B4CFB] text-xs font-bold">
-                      <Clock className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E8E6] text-[#151515] border border-[#C6C2C1] text-xs font-bold">
+                      <Clock className="w-3.5 h-3.5 text-[#C86A28]" />
                       <span>{course.duration}</span>
                     </span>
 
                     {course.hasInternship && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
-                        <Briefcase className="w-3.5 h-3.5" />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E9E8E6] text-[#544643] border border-[#C6C2C1] text-xs font-bold">
+                        <Briefcase className="w-3.5 h-3.5 text-[#C86A28]" />
                         <span>Get 30 Days Internship</span>
                       </span>
                     )}
 
-                    <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
+                    <div className="flex items-center gap-1 text-[#C86A28] text-xs font-bold">
                       <Star className="w-3.5 h-3.5 fill-current" />
-                      <span>{course.rating}</span>
-                      <span className="text-[#9494A0]">({course.reviewsCount} reviews)</span>
+                      <span className="text-[#151515]">{course.rating}</span>
+                      <span className="text-[#544643]/70">({course.reviewsCount} reviews)</span>
                     </div>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0E0E12]">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#151515]">
                     {course.title}
                   </h2>
 
-                  <p className="text-base text-[#5B5B66] leading-relaxed">
+                  <p className="text-base text-[#544643] leading-relaxed">
                     {course.description}
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                     {course.highlights.slice(0, 4).map((h, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#0E0E12]">
-                        <CheckCircle2 className="w-4 h-4 text-[#5B4CFB] shrink-0" />
+                      <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#151515]">
+                        <CheckCircle2 className="w-4 h-4 text-[#C86A28] shrink-0" />
                         <span>{h}</span>
                       </div>
                     ))}
                   </div>
 
                   <div className="pt-2">
-                    <span className="text-xs text-[#9494A0] font-semibold">
+                    <span className="text-xs text-[#544643] font-semibold">
                       Tools & Frameworks:{" "}
-                      <span className="text-[#0E0E12]">{course.tools.join(" • ")}</span>
+                      <span className="text-[#151515]">{course.tools.join(" • ")}</span>
                     </span>
                   </div>
                 </div>
 
                 {/* Right Column: CTA card */}
-                <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#ECECF1] shadow-xs flex flex-col justify-between text-center space-y-4">
+                <div className="lg:col-span-4 bg-[#E9E8E6] rounded-2xl p-6 border border-[#C6C2C1] shadow-xs flex flex-col justify-between text-center space-y-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#9494A0]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#544643]">
                       Level: {course.level}
                     </span>
-                    <h4 className="text-lg font-bold text-[#0E0E12] mt-1">
+                    <h4 className="text-lg font-bold text-[#151515] mt-1">
                       Ready to Enroll?
                     </h4>
-                    <p className="text-xs text-[#5B5B66] mt-1">
+                    <p className="text-xs text-[#544643] mt-1">
                       Batches starting every month. Limited seats for personalized 1-on-1 mentorship.
                     </p>
                   </div>
@@ -102,15 +102,15 @@ export default function AcademyPage() {
                   <div className="space-y-2 pt-2">
                     <Link
                       href={`/academy/${course.slug}`}
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#5B4CFB] text-white text-sm font-semibold hover:bg-[#4939E8] transition-colors shadow-sm"
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#151515] text-[#F7F8F8] text-sm font-semibold hover:bg-[#544643] transition-colors shadow-sm"
                     >
                       <span>View Full Curriculum</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 text-[#C86A28]" />
                     </Link>
 
                     <Link
                       href="/contact"
-                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-white border border-[#ECECF1] text-[#0E0E12] text-xs font-semibold hover:border-[#5B4CFB] hover:text-[#5B4CFB] transition-colors"
+                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#EFF0EF] border border-[#C6C2C1] text-[#151515] text-xs font-semibold hover:border-[#151515] transition-colors"
                     >
                       Enquire Admission
                     </Link>

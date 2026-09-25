@@ -12,7 +12,7 @@ interface GradientBlobProps {
 
 export function GradientBlob({
   className,
-  color = "from-[#5B4CFB]/15 via-[#8E4CFB]/10 to-[#EC4899]/15",
+  color = "from-[#E7EBEA]/80 via-[#EFF0EF]/60 to-[#E9E8E6]/80",
   size = "w-96 h-96",
   delay = 0,
 }: GradientBlobProps) {

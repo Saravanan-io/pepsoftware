@@ -62,12 +62,12 @@ export function ContactForm() {
       setIsSubmitted(true);
       reset();
 
-      // Trigger celebratory confetti
+      // Trigger celebratory confetti in brand palette
       confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ["#5B4CFB", "#A25BFB", "#EC4899", "#16C784"],
+        colors: ["#151515", "#544643", "#C86A28", "#C6C2C1"],
       });
     } catch (err: unknown) {
       setErrorMessage(
@@ -82,19 +82,19 @@ export function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#ECECF1] text-center shadow-lg space-y-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+      <div className="p-8 sm:p-12 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] text-center shadow-lg space-y-4">
+        <div className="w-16 h-16 rounded-full bg-[#E9E8E6] text-[#C86A28] border border-[#C6C2C1] flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h3 className="text-2xl font-extrabold text-[#0E0E12]">
+        <h3 className="text-2xl font-extrabold text-[#151515]">
           Project Inquiry Received!
         </h3>
-        <p className="text-sm text-[#5B5B66] max-w-md mx-auto leading-relaxed">
-          Thank you for reaching out to PEP Software. Our solutions architects are reviewing your details and will get back to you within 24 business hours.
+        <p className="text-sm text-[#544643] max-w-md mx-auto leading-relaxed">
+          Thank you for reaching out to PEP Software. Our team is reviewing your details and will get back to you within 24 business hours.
         </p>
         <button
           onClick={() => setIsSubmitted(false)}
-          className="mt-4 px-6 py-2.5 rounded-full bg-[#EFEDFF] text-[#5B4CFB] font-semibold text-xs hover:bg-[#5B4CFB] hover:text-white transition-colors"
+          className="mt-4 px-6 py-2.5 rounded-full bg-[#151515] text-[#F7F8F8] font-semibold text-xs hover:bg-[#544643] transition-colors cursor-pointer"
         >
           Send Another Message
         </button>
@@ -105,13 +105,13 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-8 sm:p-12 rounded-3xl bg-white border border-[#ECECF1] shadow-xl space-y-6"
+      className="p-8 sm:p-12 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xl space-y-6"
     >
-      <div className="border-b border-[#ECECF1] pb-4">
-        <h3 className="text-2xl font-extrabold text-[#0E0E12]">
+      <div className="border-b border-[#C6C2C1]/60 pb-4">
+        <h3 className="text-2xl font-extrabold text-[#151515]">
           Start a Project
         </h3>
-        <p className="text-sm text-[#5B5B66] mt-1">
+        <p className="text-sm text-[#544643] mt-1">
           Tell us about your product vision, timeline, and goals.
         </p>
       </div>
@@ -126,14 +126,14 @@ export function ContactForm() {
       {/* Row 1: Name & Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
             Full Name *
           </label>
           <input
             type="text"
             placeholder="John Doe"
             {...register("fullName")}
-            className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] placeholder:text-[#9494A0] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all"
+            className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] placeholder:text-[#544643]/60 outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all"
           />
           {errors.fullName && (
             <p className="text-xs text-red-500 mt-1 font-medium">
@@ -143,14 +143,14 @@ export function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
             Work Email *
           </label>
           <input
             type="email"
             placeholder="john@company.com"
             {...register("email")}
-            className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] placeholder:text-[#9494A0] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all"
+            className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] placeholder:text-[#544643]/60 outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all"
           />
           {errors.email && (
             <p className="text-xs text-red-500 mt-1 font-medium">
@@ -163,14 +163,14 @@ export function ContactForm() {
       {/* Row 2: Phone & Service */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
             Phone / WhatsApp *
           </label>
           <input
             type="tel"
             placeholder="+91 98765 43210"
             {...register("phone")}
-            className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] placeholder:text-[#9494A0] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all"
+            className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] placeholder:text-[#544643]/60 outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all"
           />
           {errors.phone && (
             <p className="text-xs text-red-500 mt-1 font-medium">
@@ -180,12 +180,12 @@ export function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
             Service Required *
           </label>
           <select
             {...register("serviceType")}
-            className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all bg-white"
+            className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all cursor-pointer"
           >
             {SERVICES_DATA.map((s) => (
               <option key={s.id} value={s.title}>
@@ -205,12 +205,12 @@ export function ContactForm() {
 
       {/* Row 3: Budget Range */}
       <div>
-        <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+        <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
           Estimated Budget (Optional)
         </label>
         <select
           {...register("budget")}
-          className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all bg-white"
+          className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all cursor-pointer"
         >
           <option value="< $5k">&lt; $5,000 / Starter</option>
           <option value="$5k - $15k">$5,000 - $15,000 / Growth</option>
@@ -221,14 +221,14 @@ export function ContactForm() {
 
       {/* Row 4: Message */}
       <div>
-        <label className="block text-xs font-bold text-[#0E0E12] uppercase tracking-wider mb-2">
+        <label className="block text-xs font-bold text-[#151515] uppercase tracking-wider mb-2">
           Project Brief / Message *
         </label>
         <textarea
           rows={4}
           placeholder="Briefly describe your project, target audience, timeline, or key objectives..."
           {...register("message")}
-          className="w-full px-4 py-3 rounded-xl border border-[#ECECF1] text-sm text-[#0E0E12] placeholder:text-[#9494A0] outline-none focus:border-[#5B4CFB] focus:ring-2 focus:ring-[#5B4CFB]/20 transition-all resize-y"
+          className="w-full px-4 py-3 rounded-xl bg-[#E9E8E6] border border-[#C6C2C1] text-sm text-[#151515] placeholder:text-[#544643]/60 outline-none focus:border-[#C86A28] focus:ring-2 focus:ring-[#C86A28]/20 transition-all resize-y"
         />
         {errors.message && (
           <p className="text-xs text-red-500 mt-1 font-medium">
@@ -241,22 +241,22 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-full bg-gradient-to-r from-[#5B4CFB] via-[#7B4CFB] to-[#EC4899] text-white font-bold text-base shadow-[0_10px_25px_-5px_rgba(91,76,251,0.5)] hover:shadow-[0_16px_32px_-5px_rgba(91,76,251,0.65)] hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:pointer-events-none transition-all duration-200 cursor-pointer"
+        className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-full bg-[#151515] text-[#F7F8F8] font-bold text-base hover:bg-[#544643] shadow-md shadow-[#151515]/10 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:pointer-events-none transition-all duration-200 cursor-pointer"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#C86A28]" />
             <span>Sending Inquiry...</span>
           </>
         ) : (
           <>
             <span>Submit Project Inquiry</span>
-            <Send className="w-4 h-4 ml-1" />
+            <Send className="w-4 h-4 ml-1 text-[#C86A28]" />
           </>
         )}
       </button>
 
-      <p className="text-[11px] text-center text-[#9494A0]">
+      <p className="text-[11px] text-center text-[#544643]">
         By submitting, you agree to our privacy policy. We treat your information with strict confidentiality.
       </p>
     </form>
