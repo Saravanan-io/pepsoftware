@@ -66,7 +66,7 @@ export default function RootLayout({
         <ScrollProgressBar />
         <SmoothScrollProvider>
           <Header />
-          <main className="flex-1 pt-20">{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </SmoothScrollProvider>
       </body>

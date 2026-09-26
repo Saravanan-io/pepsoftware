@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface RevealOnScrollProps {
@@ -19,12 +19,6 @@ export function RevealOnScroll({
   duration = 0.45,
   yOffset = 16,
 }: RevealOnScrollProps) {
-  const shouldReduceMotion = useReducedMotion();
-
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: yOffset }}

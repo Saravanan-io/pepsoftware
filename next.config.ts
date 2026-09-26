@@ -14,6 +14,19 @@ const nextConfig: NextConfig = {
 
   // Compress assets
   compress: true,
+
+  // Prevent browser caching on localhost during development
+  headers: async () => [
+    {
+      source: "/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;

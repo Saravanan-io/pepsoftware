@@ -83,7 +83,7 @@ function GlassCard({
         left: 0,
         width: "clamp(170px, 13.5vw, 205px)", // Well-proportioned so all text reads clearly
         opacity: 0,
-        pointerEvents: "auto",
+        pointerEvents: "none",
         willChange: "transform, opacity",
         zIndex: 40,
         transformOrigin: "center center",
@@ -390,13 +390,16 @@ export function HeroContent() {
     let finalYs = CARDS.map((c) => by + (c.finalVY / 100) * vh);
 
     const updateDimensions = () => {
-      bx = vw * 0.67;
-      by = vh * 0.45;
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      bx = vw >= 1024 ? vw * 0.67 : vw * 0.5;
+      by = vw >= 1024 ? vh * 0.45 : vh * 0.48;
       rx = Math.max(vw * 0.10, 135);
       ry = Math.max(vh * 0.14, 110);
       finalXs = CARDS.map((c) => bx + (c.finalVX / 100) * vw);
       finalYs = CARDS.map((c) => by + (c.finalVY / 100) * vh);
     };
+    updateDimensions();
 
     const getCardState = (
       i: number,
@@ -488,11 +491,12 @@ export function HeroContent() {
       els.forEach((el, i) => {
         el.style.transform = `translate3d(${vw + 220 + i * 220}px, ${by}px, 0) translate(-50%, -50%) scale(0.88)`;
         el.style.opacity = "0";
+        el.style.pointerEvents = "none";
       });
     };
     initCards();
 
-    const PIN_SCROLL = Math.max(vh * 2.0, 1800);
+    const PIN_SCROLL = Math.max(vh * 1.8, 1400);
 
     const masterProxy = { p: 0 };
     const tl = gsap.timeline({
@@ -521,17 +525,20 @@ export function HeroContent() {
           );
           el.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) translate(-50%, -50%) scale(${state.scale})`;
           el.style.opacity = String(state.opacity);
+          el.style.pointerEvents = state.opacity > 0.05 ? "auto" : "none";
         });
       },
     });
+
+    // Ensure ScrollTrigger positions are calculated in strict top-down order
+    ScrollTrigger.sort();
+    ScrollTrigger.refresh();
 
     // Debounced resize – avoids thrashing layout when user drags the window
     let resizeTimer: ReturnType<typeof setTimeout>;
     const onResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        vw = window.innerWidth;
-        vh = window.innerHeight;
         updateDimensions();
         initCards();
         ScrollTrigger.refresh(true);
@@ -550,16 +557,17 @@ export function HeroContent() {
 
   return (
     <>
-      {/* ── Pinned hero section: exactly 100vh, overflow hidden ─────────── */}
+      {/* ── Pinned hero section: min-height 100vh with natural responsiveness ─── */}
       <section
         ref={sectionRef}
         style={{
           position: "relative",
           width: "100%",
-          height: "100vh",       // ← exact 100vh, never overflows
+          minHeight: "100vh",
           overflow: "hidden",
           background: "#F7F8F8",
         }}
+        className="flex flex-col justify-center pt-20 lg:pt-0"
       >
         {/* Background shapes */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ transform: "translateZ(0)" }}>
@@ -593,7 +601,7 @@ export function HeroContent() {
             {/* ── Left: text ─────────────────────────────────────────────── */}
             <div className="lg:col-span-5 xl:col-span-5 space-y-8 relative z-20">
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-[46px] sm:text-[56px] lg:text-[62px] leading-[1.06] font-extrabold tracking-tight text-[#151515]"
@@ -610,7 +618,7 @@ export function HeroContent() {
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-[17px] sm:text-[19px] text-[#544643] font-medium leading-relaxed max-w-[560px]"
@@ -619,7 +627,7 @@ export function HeroContent() {
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex flex-wrap items-center gap-4 pt-2"
@@ -637,7 +645,7 @@ export function HeroContent() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="flex flex-wrap items-center gap-6 sm:gap-8 pt-6"
@@ -660,7 +668,7 @@ export function HeroContent() {
             {/* ── Right: brain image — stationary ────────────────────────── */}
             <div className="lg:col-span-7 xl:col-span-7 relative z-20 flex justify-center lg:justify-end items-center w-full">
               <motion.div
-                initial={{ opacity: 0 }}
+                initial={false}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="relative w-full max-w-[780px] xl:max-w-[880px] 2xl:max-w-[960px] select-none pointer-events-none overflow-visible"

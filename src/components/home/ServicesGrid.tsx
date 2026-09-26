@@ -112,8 +112,9 @@ export function ServicesGrid() {
     // Initial positioning
     applyCardPositions(0, window.innerWidth);
 
-    const PIN_SCROLL = Math.max(window.innerHeight * 2.0, 1800);
+    const PIN_SCROLL = Math.max(window.innerHeight * 1.8, 1400);
 
+    const progressProxy = { p: 0 };
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -121,30 +122,39 @@ export function ServicesGrid() {
         end: `+=${PIN_SCROLL}`,
         pin: true,
         pinSpacing: true,
-        scrub: 0.15, // Responsive 60fps tracking without Lenis delay
+        scrub: 0.15,
         anticipatePin: 1,
-        onUpdate: (self) => {
-          const p = self.progress;
-          // Progress 0.0 to 0.82 smoothly navigates cards 0 through 3 (N-1)
-          // Progress 0.82 to 1.0 smoothly glides last card out to seamlessly transition to next section
-          let virtual = (p / 0.82) * (N - 1);
-          if (p > 0.82) {
-            const exitP = (p - 0.82) / 0.18;
-            virtual = (N - 1) + exitP * 0.9;
-          }
+      },
+    });
 
-          applyCardPositions(virtual, window.innerWidth);
+    tl.to(progressProxy, {
+      p: 1,
+      duration: 1,
+      ease: "none",
+      onUpdate: () => {
+        const p = progressProxy.p;
+        // Progress 0.0 to 0.82 smoothly navigates cards 0 through 3 (N-1)
+        // Progress 0.82 to 1.0 smoothly glides last card out to seamlessly transition to next section
+        let virtual = (p / 0.82) * (N - 1);
+        if (p > 0.82) {
+          const exitP = (p - 0.82) / 0.18;
+          virtual = (N - 1) + exitP * 0.9;
+        }
 
-          const closest = Math.min(N - 1, Math.max(0, Math.round(virtual)));
-          if (closest !== activeIndexRef.current) {
-            activeIndexRef.current = closest;
-            setActiveIdx(closest);
-          }
-        },
+        applyCardPositions(virtual, window.innerWidth);
+
+        const closest = Math.min(N - 1, Math.max(0, Math.round(virtual)));
+        if (closest !== activeIndexRef.current) {
+          activeIndexRef.current = closest;
+          setActiveIdx(closest);
+        }
       },
     });
 
     scrollTriggerRef.current = tl.scrollTrigger;
+
+    ScrollTrigger.sort();
+    ScrollTrigger.refresh();
 
     const handleResize = () => {
       applyCardPositions(activeIndexRef.current, window.innerWidth);
@@ -193,7 +203,7 @@ export function ServicesGrid() {
     <section
       ref={sectionRef}
       id="services"
-      className="h-screen max-h-screen flex flex-col justify-between py-4 sm:py-6 lg:py-8 bg-[#F7F8F8] relative overflow-hidden select-none"
+      className="min-h-screen lg:h-screen flex flex-col justify-between py-6 sm:py-8 lg:py-10 bg-[#F7F8F8] relative overflow-hidden select-none"
     >
       {/* Background delicate dot pattern */}
       <div className="absolute inset-0 bg-dot-light opacity-30 pointer-events-none" />

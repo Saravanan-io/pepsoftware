@@ -31,16 +31,16 @@ export function ClientsMarquee() {
   ];
 
   return (
-    <section className="py-12 bg-[#E7EBEA]/50 border-y border-[#C6C2C1]/40">
+    <section className="relative z-10 py-12 bg-[#E7EBEA]/50 border-y border-[#C6C2C1]/40 overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <h3 className="text-center text-[15px] font-semibold text-[#544643] tracking-wide">
           A few of the amazing clients we've worked with.
         </h3>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-center gap-6 w-full">
-          {customClients.map((client, idx) => (
+      <div className="relative w-full overflow-hidden">
+        <div className="flex items-center gap-6 w-max animate-marquee py-2 hover:[animation-play-state:paused]">
+          {[...customClients, ...customClients, ...customClients].map((client, idx) => (
             <div
               key={`${client.name}-${idx}`}
               className="flex items-center justify-center w-[180px] h-[72px] rounded-2xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-sm transition-all duration-300 shrink-0 p-2 overflow-hidden relative"
