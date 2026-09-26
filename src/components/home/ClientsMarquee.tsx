@@ -45,12 +45,14 @@ export function ClientsMarquee() {
               key={`${client.name}-${idx}`}
               className="flex items-center justify-center w-[180px] h-[72px] rounded-2xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-sm transition-all duration-300 shrink-0 p-2 overflow-hidden relative"
             >
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full flex items-center justify-center">
                 <Image 
                   src={client.imageSrc} 
                   alt={client.name} 
-                  fill 
-                  className="object-contain filter grayscale contrast-125 opacity-85 hover:grayscale-0 hover:opacity-100 transition-all duration-300" 
+                  width={160}
+                  height={56}
+                  loading="lazy"
+                  className="max-h-full w-auto object-contain filter grayscale contrast-125 opacity-85 hover:grayscale-0 hover:opacity-100 transition-[filter,opacity] duration-300" 
                 />
               </div>
             </div>

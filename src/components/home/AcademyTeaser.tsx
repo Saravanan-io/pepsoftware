@@ -2,7 +2,6 @@
 
 import { GraduationCap, Clock, Briefcase, ArrowRight, Star, CheckCircle2, MessageCircle } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { COURSES_DATA } from "@/data/courses";
 import { COMPANY_INFO } from "@/lib/constants";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
@@ -71,10 +70,8 @@ export function AcademyTeaser() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {COURSES_DATA.slice(0, 6).map((course, idx) => (
             <RevealOnScroll key={course.id} delay={idx * 0.08}>
-              <motion.div
-                whileHover={{ y: -8, scale: 1.015 }}
-                transition={{ duration: 0.25 }}
-                className="group flex flex-col h-full p-7 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:shadow-xl hover:border-[#544643] transition-all duration-300 card-shimmer"
+              <div
+                className="group flex flex-col h-full p-7 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:shadow-xl hover:-translate-y-2 hover:border-[#544643] transition-all duration-300 card-shimmer"
               >
                 {/* Badges */}
                 <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -132,7 +129,7 @@ export function AcademyTeaser() {
                     <ArrowRight className="w-3.5 h-3.5 text-[#C86A28] transition-transform group-hover/link:translate-x-1" />
                   </Link>
                 </div>
-              </motion.div>
+              </div>
             </RevealOnScroll>
           ))}
         </div>

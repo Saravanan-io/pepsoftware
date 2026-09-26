@@ -10,10 +10,13 @@ import {
 } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { registerGSAP } from "@/lib/gsap";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+
 
 /* ─── Cards config ────────────────────────────────────────────────────────── */
 const CARDS = [
@@ -87,15 +90,15 @@ function GlassCard({
       }}
     >
       <div
-        className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+        className="group cursor-pointer transition-shadow duration-300 hover:shadow-xl"
         style={{
-          background: "rgba(255, 255, 255, 0.80)", // High-contrast frosted glass substrate for crystal-clear text readability
-          backdropFilter: "blur(24px) saturate(180%)",
-          WebkitBackdropFilter: "blur(24px) saturate(180%)",
+          background: "rgba(255, 255, 255, 0.92)",
+          // backdrop-filter removed from GlassCard: it forces GPU repaint on EVERY scroll frame.
+          // The card already has solid rgba bg so text is perfectly legible without blur.
           border: "1.2px solid rgba(255, 255, 255, 0.95)",
           borderRadius: "24px", // Modern round shape
           padding: "13px 15px 12px",
-          boxShadow: `0 18px 40px -8px rgba(21, 21, 21, 0.10), 0 4px 14px -3px ${card.accent}18, inset 0 1px 2px rgba(255, 255, 255, 1)`,
+          boxShadow: `0 12px 28px -6px rgba(21, 21, 21, 0.08), 0 2px 8px -2px ${card.accent}14`,
           position: "relative",
           overflow: "hidden",
         }}
@@ -251,22 +254,31 @@ function GlassCard({
   );
 }
 
-/* ─── Neural canvas (unchanged) ─────────────────────────────────────────── */
+/* ─── Neural canvas ─────────────────────────────────────────────────────── */
+// Driven by GSAP ticker – shares the SINGLE existing RAF loop, no second RAF loop.
 function NeuralCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
+  const isVisibleRef = useRef<boolean>(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
+    // Pause rendering via IntersectionObserver – canvas draws only when visible
+    const ioObserver = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0.05 }
+    );
+    ioObserver.observe(canvas);
+
     const BX = 0.41, BY = 0.38, BR = 0.155;
-    const nodes = Array.from({ length: 28 }, (_, i) => {
-      const a = (i / 28) * Math.PI * 2;
+    // Reduced from 28 to 20 nodes – nearly identical visual, ~30% less draw calls
+    const nodes = Array.from({ length: 20 }, (_, i) => {
+      const a = (i / 20) * Math.PI * 2;
       const r = (0.2 + Math.random() * 0.8) * BR;
-      return { x: BX + Math.cos(a) * r * 1.35, y: BY + Math.sin(a) * r * 0.92, pulse: Math.random() * Math.PI * 2, speed: 0.04 + Math.random() * 0.06 };
+      return { x: BX + Math.cos(a) * r * 1.35, y: BY + Math.sin(a) * r * 0.92, pulse: Math.random() * Math.PI * 2, speed: 0.04 + Math.random() * 0.05 };
     });
 
     type C = { a: number; b: number; spark: number; active: boolean; speed: number; opacity: number };
@@ -274,7 +286,7 @@ function NeuralCanvas() {
     nodes.forEach((n, i) => nodes.forEach((m, j) => {
       if (j <= i) return;
       const d = Math.sqrt((n.x - m.x) ** 2 + (n.y - m.y) ** 2);
-      if (d < 0.12) conns.push({ a: i, b: j, spark: Math.random(), active: Math.random() > 0.4, speed: 0.008 + Math.random() * 0.016, opacity: 0.15 + Math.random() * 0.55 });
+      if (d < 0.12) conns.push({ a: i, b: j, spark: Math.random(), active: Math.random() > 0.4, speed: 0.009 + Math.random() * 0.015, opacity: 0.15 + Math.random() * 0.55 });
     }));
 
     let t = 0;
@@ -283,55 +295,65 @@ function NeuralCanvas() {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    const draw = () => {
-      if (!canvas || !ctx) return;
+    // ── CRITICAL PERF FIX: drive draw() from GSAP's ticker, NOT a separate requestAnimationFrame.
+    // Previously there were TWO competing RAF loops (GSAP ticker + NeuralCanvas own RAF),
+    // which doubles CPU scheduling overhead and causes frame budget contention.
+    const onTick = () => {
+      if (!isVisibleRef.current || !canvas || !ctx) return;
       const W = canvas.width, H = canvas.height;
-      ctx.clearRect(0, 0, W, H); t += 0.018;
+      ctx.clearRect(0, 0, W, H);
+      t += 0.016;
+
       nodes.forEach(n => {
         n.pulse += n.speed;
         const alpha = 0.4 + 0.6 * Math.abs(Math.sin(n.pulse));
-        const px = n.x * W, py = n.y * H, r = 2 + 2.5 * Math.abs(Math.sin(n.pulse));
-        const g = ctx.createRadialGradient(px, py, 0, px, py, r * 3);
-        g.addColorStop(0, `rgba(255,160,60,${alpha * 0.9})`);
-        g.addColorStop(0.4, `rgba(255,110,20,${alpha * 0.4})`);
-        g.addColorStop(1, "rgba(255,80,0,0)");
-        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+        const px = n.x * W, py = n.y * H, r = 2 + 2.2 * Math.abs(Math.sin(n.pulse));
+        ctx.beginPath();
+        ctx.arc(px, py, r * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,140,40,${(alpha * 0.25).toFixed(2)})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,200,90,${(alpha * 0.9).toFixed(2)})`;
+        ctx.fill();
       });
+
       conns.forEach(c => {
         if (!c.active) { if (Math.random() < 0.003) { c.active = true; c.spark = 0; } return; }
-        c.spark += c.speed; if (c.spark > 1) { c.active = Math.random() > 0.35; c.spark = 0; }
+        c.spark += c.speed;
+        if (c.spark > 1) { c.active = Math.random() > 0.35; c.spark = 0; }
         const n = nodes[c.a], m = nodes[c.b];
         const x1 = n.x * W, y1 = n.y * H, x2 = m.x * W, y2 = m.y * H;
         ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
-        ctx.strokeStyle = `rgba(255,140,40,${c.opacity * 0.18})`; ctx.lineWidth = 0.8; ctx.stroke();
+        ctx.strokeStyle = `rgba(255,140,40,${(c.opacity * 0.18).toFixed(2)})`;
+        ctx.lineWidth = 0.8; ctx.stroke();
+
         const sx = x1 + (x2 - x1) * c.spark, sy = y1 + (y2 - y1) * c.spark;
         const fa = 0.5 + 0.5 * Math.abs(Math.sin(t * 18 + c.a));
-        const tl = Math.max(0, c.spark - 0.18);
-        const lg = ctx.createLinearGradient(x1 + (x2 - x1) * tl, y1 + (y2 - y1) * tl, sx, sy);
-        lg.addColorStop(0, "rgba(255,120,20,0)"); lg.addColorStop(1, `rgba(255,180,60,${c.opacity * fa})`);
-        ctx.beginPath(); ctx.moveTo(x1 + (x2 - x1) * tl, y1 + (y2 - y1) * tl); ctx.lineTo(sx, sy);
-        ctx.strokeStyle = lg; ctx.lineWidth = 1.5; ctx.stroke();
-        const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, 7);
-        sg.addColorStop(0, `rgba(255,220,100,${fa})`);
-        sg.addColorStop(0.5, `rgba(255,140,30,${fa * 0.6})`);
-        sg.addColorStop(1, "rgba(255,80,0,0)");
-        ctx.beginPath(); ctx.arc(sx, sy, 7, 0, Math.PI * 2); ctx.fillStyle = sg; ctx.fill();
+        ctx.beginPath();
+        ctx.arc(sx, sy, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,160,50,${(fa * 0.35).toFixed(2)})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(sx, sy, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,230,120,${(fa * 0.9).toFixed(2)})`;
+        ctx.fill();
       });
-      if (Math.random() < 0.018) {
-        const n = nodes[Math.floor(Math.random() * nodes.length)];
-        const px = n.x * W, py = n.y * H;
-        const b = ctx.createRadialGradient(px, py, 0, px, py, 28);
-        b.addColorStop(0, "rgba(255,200,80,0.55)"); b.addColorStop(0.5, "rgba(255,120,30,0.18)"); b.addColorStop(1, "rgba(255,80,0,0)");
-        ctx.beginPath(); ctx.arc(px, py, 28, 0, Math.PI * 2); ctx.fillStyle = b; ctx.fill();
-      }
-      animRef.current = requestAnimationFrame(draw);
     };
-    draw();
-    return () => { cancelAnimationFrame(animRef.current); ro.disconnect(); };
+
+    // Register with GSAP ticker – shares the single existing RAF from useLenis
+    gsap.ticker.add(onTick);
+
+    return () => {
+      gsap.ticker.remove(onTick);
+      ioObserver.disconnect();
+      ro.disconnect();
+    };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" style={{ mixBlendMode: "screen" }} />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" />;
 }
+
 
 /* ─── HeroContent ────────────────────────────────────────────────────────── */
 export function HeroContent() {
@@ -353,44 +375,42 @@ export function HeroContent() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // All card elements must be ready
     const els = cardDOMRefs.map(r => r.current).filter(Boolean) as HTMLDivElement[];
     if (els.length !== 4) return;
 
-    // ── Brain center: precisely centered on the glowing neural brain image
-    const BX = () => window.innerWidth * 0.67;
-    const BY = () => window.innerHeight * 0.45;
+    // ── Cache viewport dimensions once – only refresh on resize
+    let vw = window.innerWidth;
+    let vh = window.innerHeight;
 
-    // Tight orbit radii hugging right near the brain perimeter
-    const Rx = () => Math.max(window.innerWidth * 0.10, 135);
-    const Ry = () => Math.max(window.innerHeight * 0.14, 110);
+    let bx = vw * 0.67;
+    let by = vh * 0.45;
+    let rx = Math.max(vw * 0.10, 135);
+    let ry = Math.max(vh * 0.14, 110);
+    let finalXs = CARDS.map((c) => bx + (c.finalVX / 100) * vw);
+    let finalYs = CARDS.map((c) => by + (c.finalVY / 100) * vh);
 
-    // Card final screen positions (viewport px from section top-left)
-    const finalX = (i: number) => BX() + (CARDS[i].finalVX / 100) * window.innerWidth;
-    const finalY = (i: number) => BY() + (CARDS[i].finalVY / 100) * window.innerHeight;
+    const updateDimensions = () => {
+      bx = vw * 0.67;
+      by = vh * 0.45;
+      rx = Math.max(vw * 0.10, 135);
+      ry = Math.max(vh * 0.14, 110);
+      finalXs = CARDS.map((c) => bx + (c.finalVX / 100) * vw);
+      finalYs = CARDS.map((c) => by + (c.finalVY / 100) * vh);
+    };
 
-    // Mathematical parametric function for 100% fluid, continuous, silky smooth motion
     const getCardState = (
       i: number,
       p: number,
-      W: number,
-      bx: number,
-      by: number,
-      rx: number,
-      ry: number,
+      curBx: number,
+      curBy: number,
+      curRx: number,
+      curRy: number,
       fx: number,
       fy: number
     ) => {
-      const progress = Math.max(0, Math.min(1, p));
-      // Queue position along the incoming line
-      const startX = W + 200 + i * 300;
-      const entryX = bx + rx;
+      const startX = vw + 220 + i * 220;
+      const entryX = curBx + curRx;
 
-      // Target departure angles for each card (calm, single-round orbit - no rapid multi-spins)
-      // 0: Top-Left (-1.75π = 315°: loops over Top, Left, Bottom, up to Top-Left)
-      // 1: Bottom-Left (-1.25π = 225°: loops over Top, Left, into Bottom-Left)
-      // 2: Top-Right (-2.25π = 405°: full 360° loop into Top-Right)
-      // 3: Bottom-Right (-2.00π = 360°: full 360° loop into Bottom-Right)
       const TARGET_SWEEPS = [
         -1.75 * Math.PI,
         -1.25 * Math.PI,
@@ -398,77 +418,83 @@ export function HeroContent() {
         -2.00 * Math.PI,
       ];
       const totalSweep = TARGET_SWEEPS[i];
-      const RESTING_ROT = [-2, -2, 2, 2];
+
+      // Each card enters with slight stagger:
+      // Enter: 0.00 -> 0.14 + stagger
+      // Orbit: -> 0.42 + stagger
+      // Rest: all cards settled from ~0.50 to 0.70
+      // Exit: cards exit one by one to the right edge from 0.70 to 0.94
+      const enterStart = i * 0.04;
+      const enterEnd = enterStart + 0.14;
+      const orbitEnd = enterEnd + 0.24;
+
+      const exitStart = 0.70 + i * 0.045;
+      const exitEnd = exitStart + 0.13;
 
       let x = startX;
-      let y = by;
+      let y = curBy;
       let opacity = 0;
       let scale = 0.88;
-      let rotate = 0;
 
-      if (progress <= 0.28) {
-        // ── Phase 1: Straight line entry from right edge ──
-        const t = progress / 0.28;
-        // Smooth Hermite easing along the straight line
+      if (p < enterStart) {
+        x = startX;
+        y = curBy;
+        opacity = 0;
+        scale = 0.88;
+      } else if (p <= enterEnd) {
+        const t = (p - enterStart) / (enterEnd - enterStart);
         const ease = t * t * (3 - 2 * t);
         x = startX + (entryX - startX) * ease;
-        y = by;
+        y = curBy;
         opacity = Math.min(1, t * 2.5);
-        scale = 0.88 + 0.06 * ease;
-        rotate = -2.5 * ease;
-      } else if (progress <= 0.78) {
-        // ── Phase 2: Gentle, slow circular orbit around brain ──
-        const t = (progress - 0.28) / 0.50;
-        // Linear angular progression -> perfectly uniform, slow angular speed
+        scale = 0.88 + 0.08 * ease;
+      } else if (p <= orbitEnd) {
+        const t = (p - enterEnd) / (orbitEnd - enterEnd);
         const angle = t * totalSweep;
-        x = bx + Math.cos(angle) * rx;
-        y = by + Math.sin(angle) * ry;
+        x = curBx + Math.cos(angle) * curRx;
+        y = curBy + Math.sin(angle) * curRy;
         opacity = 1;
-        // Subtle banking tilt
-        rotate = Math.sin(angle) * 6;
-        scale = 0.94 + 0.03 * Math.sin(angle);
-      } else {
-        // ── Phase 3: Gentle settle & dock into corner ──
-        const t = (progress - 0.78) / 0.22;
-        // Smooth cubic ease out to come to a gentle stop ("nikanum")
-        const ease = 1 - Math.pow(1 - t, 3);
-
+        scale = 0.96;
+      } else if (p <= exitStart) {
+        const tSettle = Math.min(1, (p - orbitEnd) / 0.08);
+        const easeSettle = 1 - Math.pow(1 - tSettle, 3);
         const exitAngle = totalSweep;
-        const exitX = bx + Math.cos(exitAngle) * rx;
-        const exitY = by + Math.sin(exitAngle) * ry;
-        const exitRotate = Math.sin(exitAngle) * 6;
-
-        x = exitX + (fx - exitX) * ease;
-        y = exitY + (fy - exitY) * ease;
+        const orbitEndX = curBx + Math.cos(exitAngle) * curRx;
+        const orbitEndY = curBy + Math.sin(exitAngle) * curRy;
+        x = orbitEndX + (fx - orbitEndX) * easeSettle;
+        y = orbitEndY + (fy - orbitEndY) * easeSettle;
         opacity = 1;
-        rotate = exitRotate + (RESTING_ROT[i] - exitRotate) * ease;
-        scale = 0.94 + 0.06 * ease;
+        scale = 0.96 + 0.04 * easeSettle;
+      } else if (p <= exitEnd) {
+        // Exit one by one towards right edge of screen
+        const t = (p - exitStart) / (exitEnd - exitStart);
+        const ease = t * t * (3 - 2 * t);
+        const exitTargetX = vw + 260 + i * 150;
+        x = fx + (exitTargetX - fx) * ease;
+        y = fy;
+        opacity = Math.max(0, 1 - t * 1.5);
+        scale = 1.0 - 0.12 * ease;
+      } else {
+        x = vw + 350;
+        y = fy;
+        opacity = 0;
+        scale = 0.85;
       }
 
-      return { x, y, opacity, scale, rotate };
+      return { x, y, opacity, scale };
     };
 
-    // Init: all cards queued continuously in a single horizontal line extending off the right edge
     const initCards = () => {
-      const W = window.innerWidth;
-      const by = BY();
       els.forEach((el, i) => {
-        gsap.set(el, {
-          x: W + 200 + i * 300,
-          y: by,
-          xPercent: -50,
-          yPercent: -50,
-          opacity: 0,
-          rotate: 0,
-          scale: 0.88,
-        });
+        el.style.transform = `translate3d(${vw + 220 + i * 220}px, ${by}px, 0) translate(-50%, -50%) scale(0.88)`;
+        el.style.opacity = "0";
       });
     };
     initCards();
 
-    // Smooth scroll track: cards animate slowly and smoothly, and unpins immediately when all cards dock
-    const PIN_SCROLL = Math.max(window.innerHeight * 3.4, 2800);
+    const PIN_SCROLL = Math.max(vh * 2.0, 1800);
 
+    const masterProxy = { p: 0 };
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -476,64 +502,47 @@ export function HeroContent() {
         end: `+=${PIN_SCROLL}`,
         pin: true,
         pinSpacing: true,
-        scrub: 1.1, // buttery smooth, calm momentum
+        scrub: 0.15,
         anticipatePin: 1,
       },
     });
 
-    // 4 parametric progress trackers for 100% fluid, continuous, slow movement
-    const proxies = [
-      { p: 0 },
-      { p: 0 },
-      { p: 0 },
-      { p: 0 },
-    ];
-
-    proxies.forEach((proxy, i) => {
-      const el = els[i];
-      const t0 = i * 0.50; // continuous, calm stagger
-
-      tl.to(proxy, {
-        p: 1,
-        duration: 3.2, // slow, graceful flight time
-        ease: "none",
-        onUpdate: () => {
+    tl.to(masterProxy, {
+      p: 1,
+      duration: 1,
+      ease: "none",
+      onUpdate: () => {
+        const curP = masterProxy.p;
+        els.forEach((el, i) => {
+          if (!el) return;
           const state = getCardState(
-            i,
-            proxy.p,
-            window.innerWidth,
-            BX(),
-            BY(),
-            Rx(),
-            Ry(),
-            finalX(i),
-            finalY(i)
+            i, curP,
+            bx, by, rx, ry, finalXs[i], finalYs[i]
           );
-          gsap.set(el, {
-            x: state.x,
-            y: state.y,
-            xPercent: -50,
-            yPercent: -50,
-            opacity: state.opacity,
-            scale: state.scale,
-            rotate: state.rotate,
-          });
-        },
-      }, t0);
+          el.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) translate(-50%, -50%) scale(${state.scale})`;
+          el.style.opacity = String(state.opacity);
+        });
+      },
     });
 
-    // No empty hold delay: the exact moment all cards dock in place, continuing to scroll immediately brings up the next page!
-
-    // Resize handler
+    // Debounced resize – avoids thrashing layout when user drags the window
+    let resizeTimer: ReturnType<typeof setTimeout>;
     const onResize = () => {
-      initCards();
-      ScrollTrigger.refresh(true);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        vw = window.innerWidth;
+        vh = window.innerHeight;
+        updateDimensions();
+        initCards();
+        ScrollTrigger.refresh(true);
+      }, 150);
     };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onResize, { passive: true });
 
     return () => {
+      clearTimeout(resizeTimer);
+      tl.scrollTrigger?.kill();
       tl.kill();
-      ScrollTrigger.getAll().forEach(st => st.kill());
       window.removeEventListener("resize", onResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -553,7 +562,7 @@ export function HeroContent() {
         }}
       >
         {/* Background shapes */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ transform: "translateZ(0)" }}>
           <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-[#E7EBEA] blur-[120px] rounded-full" />
           <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] bg-[#EFF0EF] blur-[140px] rounded-full" />
           <div className="absolute -top-32 right-0 w-[40%] h-[600px] bg-gradient-to-br from-[#E7EBEA] via-[#EFF0EF] to-[#E9E8E6] opacity-80 blur-[4px] rounded-bl-full transform rotate-12 scale-150 origin-top-right mix-blend-multiply" />
@@ -657,12 +666,7 @@ export function HeroContent() {
                 className="relative w-full max-w-[780px] xl:max-w-[880px] 2xl:max-w-[960px] select-none pointer-events-none overflow-visible"
               >
                 <div className="absolute w-[85%] h-[70%] bg-gradient-to-tr from-[#E7EBEA]/60 via-[#EFF0EF]/40 to-[#C86A28]/8 rounded-full blur-3xl pointer-events-none -z-10" />
-                {/* gentle float */}
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full"
-                >
+                <div className="relative w-full">
                   <div className="relative w-full">
                     <Image
                       src="/hero-brain-showcase.png"
@@ -674,7 +678,7 @@ export function HeroContent() {
                     />
                     <NeuralCanvas />
                   </div>
-                </motion.div>
+                </div>
               </motion.div>
             </div>
 
@@ -713,7 +717,9 @@ export function HeroContent() {
           )}
         </div>
 
-        <style>{`@keyframes scrollDot{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(10px);opacity:0.3}}`}</style>
+        <style>{`
+          @keyframes scrollDot{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(10px);opacity:0.3}}
+        `}</style>
       </section>
     </>
   );

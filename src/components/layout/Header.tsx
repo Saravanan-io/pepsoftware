@@ -13,7 +13,17 @@ export function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 20;
+          setScrolled((prev) => (prev !== isScrolled ? isScrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -30,6 +40,7 @@ export function Header() {
     <>
       <header
         className={`fixed top-4 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4`}
+        style={{ transform: "translateZ(0)", willChange: "transform" }}
       >
         <div
           className={`w-full max-w-[1200px] mx-auto rounded-[40px] flex items-center justify-between px-6 py-3 transition-all duration-300 bg-[#F7F8F8] shadow-sm border border-[#C6C2C1]/40 ${
@@ -43,6 +54,8 @@ export function Header() {
                 src="/pep-icon.png"
                 alt="Pep Software Logo Icon"
                 fill
+                sizes="44px"
+                priority
                 className="object-contain"
               />
             </div>

@@ -16,8 +16,8 @@ export function RevealOnScroll({
   children,
   className,
   delay = 0,
-  duration = 0.65,
-  yOffset = 24,
+  duration = 0.45,
+  yOffset = 16,
 }: RevealOnScrollProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -29,11 +29,11 @@ export function RevealOnScroll({
     <motion.div
       initial={{ opacity: 0, y: yOffset }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
+      viewport={{ once: true, margin: "0px 0px 80px 0px" }}
       transition={{
         duration,
         delay,
-        ease: [0.16, 1, 0.3, 1], // expo-out per spec
+        ease: [0.16, 1, 0.3, 1],
       }}
       className={cn("w-full", className)}
     >

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight, MessageSquareQuote, Quote } from "lucide-react";
 import { TESTIMONIALS_DATA } from "@/data/testimonials";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
@@ -54,10 +53,8 @@ export function Testimonials() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TESTIMONIALS_DATA.slice(0, 3).map((t, i) => (
             <RevealOnScroll key={t.id} delay={i * 0.1}>
-              <motion.div
-                whileHover={{ y: -8, scale: 1.02 }}
-                transition={{ duration: 0.25 }}
-                className="group relative flex flex-col justify-between h-full p-8 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:shadow-xl hover:border-[#544643] transition-all duration-300 card-shimmer overflow-hidden"
+              <div
+                className="group relative flex flex-col justify-between h-full p-8 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:shadow-xl hover:-translate-y-2 hover:border-[#544643] transition-all duration-300 card-shimmer overflow-hidden"
               >
                 <Quote className="absolute top-5 right-5 w-10 h-10 text-[#C6C2C1]/40 group-hover:text-[#C86A28]/40 transition-colors" />
 
@@ -92,7 +89,7 @@ export function Testimonials() {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </RevealOnScroll>
           ))}
         </div>

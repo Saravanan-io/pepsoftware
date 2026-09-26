@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight, Eye, Globe, Sparkles } from "lucide-react";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
 import { AnimatedCounter } from "../shared/AnimatedCounter";
@@ -93,12 +92,8 @@ export function IntroStatement() {
                     { value: "150+", label: "Projects Delivered" },
                     { value: "100+", label: "Happy Clients" },
                   ].map((stat, i) => (
-                    <motion.div
+                    <div
                       key={stat.label}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.2 + i * 0.1 }}
                       className="text-center p-4 rounded-2xl bg-[#E9E8E6] border border-[#C6C2C1]/80 shadow-xs"
                     >
                       <div className="text-2xl sm:text-3xl font-black text-[#151515]">
@@ -107,7 +102,7 @@ export function IntroStatement() {
                       <div className="text-[11px] text-[#544643] mt-1 font-semibold">
                         {stat.label}
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 

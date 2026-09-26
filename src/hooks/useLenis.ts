@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { gsap } from "gsap";
 import { registerGSAP } from "@/lib/gsap";
 
 export function useLenis() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Check if user prefers reduced motion
+    // Respect prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -18,27 +19,29 @@ export function useLenis() {
     const { ScrollTrigger } = registerGSAP();
 
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.1,
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5,
     });
 
     lenisRef.current = lenis;
 
+    // Sync Lenis with ScrollTrigger on each scroll event
     lenis.on("scroll", ScrollTrigger.update);
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    const rafId = requestAnimationFrame(raf);
+    // Drive Lenis through GSAP ticker to share a single RAF loop
+    // This prevents two competing requestAnimationFrame loops
+    const onTick = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(onTick);
+    gsap.ticker.lagSmoothing(0); // prevent large jumps after tab switch
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(onTick);
       lenis.destroy();
       lenisRef.current = null;
     };
@@ -46,3 +49,4 @@ export function useLenis() {
 
   return lenisRef;
 }
+

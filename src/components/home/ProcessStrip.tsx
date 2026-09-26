@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Search, Map, Layers, Code2, ShieldCheck, Rocket, Sparkles } from "lucide-react";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
 
@@ -96,10 +95,8 @@ export function ProcessStrip() {
               const Icon = step.icon;
               return (
                 <RevealOnScroll key={step.num} delay={idx * 0.08}>
-                  <motion.div
-                    whileHover={{ y: -8, scale: 1.03 }}
-                    transition={{ duration: 0.25 }}
-                    className="relative group flex flex-col items-center text-center p-6 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] hover:border-[#544643] transition-all duration-300 shadow-xs hover:shadow-md card-shimmer"
+                  <div
+                    className="relative group flex flex-col items-center text-center p-6 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] hover:border-[#544643] hover:-translate-y-2 hover:shadow-md transition-all duration-300 shadow-xs card-shimmer"
                   >
                     {/* Step number bubble */}
                     <div className="relative w-14 h-14 rounded-2xl bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center mb-4 shadow-xs group-hover:scale-110 group-hover:border-[#544643] transition-all duration-300">
@@ -113,7 +110,7 @@ export function ProcessStrip() {
                       {step.title}
                     </h4>
                     <p className="text-[11px] text-[#544643] leading-relaxed">{step.desc}</p>
-                  </motion.div>
+                  </div>
                 </RevealOnScroll>
               );
             })}

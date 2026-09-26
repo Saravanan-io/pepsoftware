@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 
 interface AnimatedCounterProps {
@@ -23,10 +23,8 @@ export function AnimatedCounter({
   const isFloat = value.includes(".");
   const suffix = value.replace(/[\d.]/g, "");
 
-  const [current, setCurrent] = useState(0);
-
   useEffect(() => {
-    if (!isInView || targetNumber === 0) return;
+    if (!isInView || targetNumber === 0 || !ref.current) return;
 
     let startTime: number | null = null;
     let animationFrameId: number;
@@ -36,28 +34,30 @@ export function AnimatedCounter({
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
       // Ease out cubic
       const easeProgress = 1 - Math.pow(1 - progress, 3);
-      setCurrent(easeProgress * targetNumber);
+      const current = easeProgress * targetNumber;
+      const displayValue = isFloat
+        ? current.toFixed(1)
+        : Math.floor(current).toString();
+
+      if (ref.current) {
+        ref.current.textContent = `${displayValue}${suffix}`;
+      }
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(step);
-      } else {
-        setCurrent(targetNumber);
+      } else if (ref.current) {
+        ref.current.textContent = `${isFloat ? targetNumber.toFixed(1) : targetNumber}${suffix}`;
       }
     };
 
     animationFrameId = requestAnimationFrame(step);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isInView, targetNumber, duration]);
-
-  const displayValue = isFloat
-    ? current.toFixed(1)
-    : Math.floor(current).toString();
+  }, [isInView, targetNumber, duration, isFloat, suffix]);
 
   return (
     <span ref={ref} className={className}>
-      {displayValue}
-      {suffix}
+      0{suffix}
     </span>
   );
 }

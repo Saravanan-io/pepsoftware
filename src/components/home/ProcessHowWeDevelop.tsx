@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
 import { FolderCheck, Users, Trophy, Star, TrendingUp, Sparkles } from "lucide-react";
 import { AnimatedCounter } from "../shared/AnimatedCounter";
 import { RevealOnScroll } from "../shared/RevealOnScroll";
@@ -12,7 +12,34 @@ const metrics = [
   { value: "4.9", label: "Client Rating", icon: Star },
 ];
 
+const bars = [
+  { h: 0.40, q: "Q1", active: false },
+  { h: 0.58, q: "Q2", active: false },
+  { h: 0.72, q: "Q3", active: false },
+  { h: 0.88, q: "Q4", active: false },
+  { h: 1.00, q: "Now", active: true },
+];
+
 export function ProcessHowWeDevelop() {
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  // Bar animations only start when the chart scrolls into view — not on first paint
+  useEffect(() => {
+    const el = chartRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("bars-animate");
+          observer.disconnect(); // fire once only
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="py-20 lg:py-28 bg-[#E7EBEA] relative overflow-hidden">
       <div className="absolute inset-0 bg-dot-light opacity-30 pointer-events-none" />
@@ -42,19 +69,17 @@ export function ProcessHowWeDevelop() {
                 const Icon = m.icon;
                 return (
                   <RevealOnScroll key={m.label} delay={idx * 0.1}>
-                    <motion.div
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{ duration: 0.25 }}
-                      className="p-6 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-lg transition-all duration-300 group card-shimmer"
+                    <div
+                      className="p-6 rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] shadow-xs hover:border-[#544643] hover:shadow-lg hover:-translate-y-1.5 hover:scale-[1.02] transition-[border-color,box-shadow,transform] duration-300 group card-shimmer"
                     >
-                      <div className="w-12 h-12 rounded-2xl bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center mb-5 shadow-xs group-hover:scale-105 group-hover:border-[#544643] transition-all duration-300">
+                      <div className="w-12 h-12 rounded-2xl bg-[#E9E8E6] border border-[#C6C2C1] flex items-center justify-center mb-5 shadow-xs group-hover:scale-105 group-hover:border-[#544643] transition-[border-color,transform] duration-300">
                         <Icon className="w-6 h-6 text-[#C86A28]" />
                       </div>
                       <div className="text-4xl font-black text-[#151515] leading-none">
                         <AnimatedCounter value={m.value} />
                       </div>
                       <p className="text-sm font-semibold text-[#544643] mt-2">{m.label}</p>
-                    </motion.div>
+                    </div>
                   </RevealOnScroll>
                 );
               })}
@@ -81,33 +106,29 @@ export function ProcessHowWeDevelop() {
                   </div>
                 </div>
 
-                {/* Animated Bar Chart */}
-                <div className="h-48 flex items-end gap-3 px-2 pb-2 border-b border-[#544643]/40">
-                  {[
-                    { h: 40, q: "Q1", active: false },
-                    { h: 58, q: "Q2", active: false },
-                    { h: 72, q: "Q3", active: false },
-                    { h: 88, q: "Q4", active: false },
-                    { h: 100, q: "Now", active: true },
-                  ].map((bar, i) => (
-                    <div key={bar.q} className="flex-1 flex flex-col items-center gap-2">
-                      <motion.div
-                        initial={{ height: 0 }}
-                        whileInView={{ height: `${bar.h}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.9, delay: 0.1 + i * 0.12, ease: "easeOut" }}
-                        className="w-full rounded-t-xl relative overflow-hidden"
+                {/* Animated Bar Chart – animated only when scrolled into view */}
+                <div ref={chartRef} className="h-48 flex items-end gap-3 px-2 pb-2 border-b border-[#544643]/40">
+                  {bars.map((bar, i) => (
+                    <div key={bar.q} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+                      {/* scrollDrivenBar uses IntersectionObserver via CSS @keyframes on parent */}
+                      <div
+                        className="w-full rounded-t-xl relative overflow-hidden bar-chart-item"
                         style={{
+                          height: `${bar.h * 100}%`,
                           background: bar.active
                             ? "linear-gradient(to top, #544643, #C86A28)"
                             : "rgba(198, 194, 193, 0.15)",
                           boxShadow: bar.active ? "0 0 25px rgba(200,106,40,0.5)" : "none",
+                          transform: "scaleY(0)",
+                          transformOrigin: "bottom",
+                          // animation-play-state starts paused; toggled to running by IntersectionObserver via CSS class
+                          animation: `barGrow 0.9s ${0.1 + i * 0.12}s ease-out both paused`,
                         }}
                       >
                         {bar.active && (
                           <div className="absolute inset-0 bg-gradient-to-t from-[#C86A28]/40 to-transparent animate-pulse" />
                         )}
-                      </motion.div>
+                      </div>
                       <span className={`text-[10px] font-semibold ${bar.active ? "text-[#C86A28]" : "text-[#C6C2C1]"}`}>
                         {bar.q}
                       </span>

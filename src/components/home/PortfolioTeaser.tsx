@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,13 +14,19 @@ export function PortfolioTeaser() {
   const [page, setPage] = useState(0);
   const itemsPerPage = 3;
 
-  const filtered =
-    activeTab === "All"
-      ? PORTFOLIO_DATA
-      : PORTFOLIO_DATA.filter((p) => p.category === activeTab);
+  const filtered = useMemo(
+    () =>
+      activeTab === "All"
+        ? PORTFOLIO_DATA
+        : PORTFOLIO_DATA.filter((p) => p.category === activeTab),
+    [activeTab]
+  );
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const current = filtered.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
+  const current = useMemo(
+    () => filtered.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage),
+    [filtered, page]
+  );
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -87,13 +93,11 @@ export function PortfolioTeaser() {
               return (
                 <motion.div
                   key={`${project.id}-${activeTab}-${page}`}
-                  layout
                   initial={{ opacity: 0, y: 20, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 20, scale: 0.97 }}
-                  transition={{ duration: 0.4, delay: idx * 0.07 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative flex flex-col rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] hover:border-[#544643] shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden card-shimmer"
+                  transition={{ duration: 0.35, delay: idx * 0.05 }}
+                  className="group relative flex flex-col rounded-3xl bg-[#EFF0EF] border border-[#C6C2C1] hover:border-[#544643] shadow-xs hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden card-shimmer"
                 >
                   {/* Project visual header */}
                   <div className="relative h-52 bg-gradient-to-br from-[#E7EBEA] via-[#EFF0EF] to-[#E9E8E6] border-b border-[#C6C2C1] p-5 flex flex-col justify-between overflow-hidden">

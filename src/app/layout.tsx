@@ -60,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakarta.variable} font-sans scroll-smooth`}>
+    <html lang="en" className={`${jakarta.variable} font-sans`}>
       <body className="min-h-screen flex flex-col bg-[#F7F8F8] text-[#151515] antialiased selection:bg-[#C86A28] selection:text-white">
         <Preloader />
         <ScrollProgressBar />

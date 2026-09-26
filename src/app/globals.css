@@ -41,7 +41,7 @@
 
 html {
   background: var(--bg);
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth removed – Lenis handles smooth scrolling; native smooth + Lenis causes double-smoothing */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -50,9 +50,28 @@ html {
 body {
   margin: 0;
   overflow-x: hidden;
+  /* Prevent scroll chaining/rubber-band effect that causes jank on some systems */
+  overscroll-behavior: none;
   font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg);
   color: var(--text-primary);
+}
+
+/* ─── Lenis Scroll Optimization ─── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* ─── Scrollbar ─── */
@@ -130,6 +149,7 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 0;
+  transform: translateZ(0);
 }
 
 /* ─── Grid Pattern ─── */
@@ -306,4 +326,56 @@ body {
 .stat-card-dark {
   background: #E9E8E6;
   border: 1px solid #C6C2C1;
+}
+
+/* ─── Performance: reduced-motion support ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── GPU compositing hints: ONLY elements that actually animate on scroll/time ─── */
+/* will-change creates a new compositor layer — use ONLY where it helps */
+.animate-spin-slow,
+.animate-float-blob,
+.animate-float-slow,
+.animate-float-medium,
+.animate-marquee {
+  will-change: transform;
+}
+
+
+
+/* ─── Prevent transition fighting during GSAP-driven animations ─── */
+/* Elements that GSAP transforms directly must NOT also have CSS transition on transform */
+[data-gsap-target] {
+  transition: opacity 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* ─── Hover transitions: restrict to GPU-friendly properties only ─── */
+.card-shimmer {
+  /* box-shadow transitions are expensive — suppress during active scroll */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ─── Contain paint for heavy background sections ─── */
+.noise-overlay {
+  contain: paint;
+}
+
+/* ─── Bar chart grow animation (GPU-composited scaleY) ─── */
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* When the chart wrapper is in view, run bar animations */
+.bars-animate .bar-chart-item {
+  animation-play-state: running !important;
 }
